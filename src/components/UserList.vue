@@ -8,10 +8,6 @@
         </b-link>
       </b-col>
       <b-col class="wdt-count">
-        <span class="tit01">Estrelas</span>
-        <span class="count">0</span>
-      </b-col>
-      <b-col class="wdt-count">
         <span class="tit01">Seguidores</span>
         <span class="count">{{ getNumber(user.followers) }}</span>
       </b-col>
@@ -141,7 +137,7 @@ export default {
         if ((!url) || (url === this.call.repos))
           return
       
-      this.$http.get(url + '?clientID=' + this.userID + '&clientAgent=' + this.userAgent)
+      this.$http.get(url + '?clientID=' + this.userID + '&clientAgent=' + this.userAgent + '&page=' + this.cache.repos_page)
         .then((res) => {
           const result = res.body
           if(type) {
@@ -165,7 +161,8 @@ export default {
       }
     },
     loadMoreRepos () {
-      
+      this.cache.repos_page = this.cache.repos_page + 1
+      this.getCount('repos_view', this.user.repos_url)
     }
   }
 }
