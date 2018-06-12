@@ -24,14 +24,13 @@
         <p class="userName"><b-link @click="getCount('user_view', null)">{{ user.name }}</b-link></p>
         <p>@{{ user.login }}</p>
       </b-col>
-              
       <b-col v-if="current_view === 'user_view'" md="8" class="userInfo">
         <h4>Informações:</h4>
         <ul class="list">
           <li v-if="user.bio"><strong>Biodata:</strong> {{ user.bio }}</li>
           <li v-if="user.company"><strong>Empresa:</strong> {{ user.company }}</li>
           <li v-if="user.location"><strong>Localização:</strong> {{ user.location }}</li>
-          <li v-if="user.email"><strong>E-Mail:</strong> {{ user.email }}</li>          
+          <li v-if="user.email"><strong>E-Mail:</strong> {{ user.email }}</li>
           <li v-if="user.blog"><strong>Blog:</strong> {{ user.blog }}</li>
           <li><strong>Membro desde:</strong> {{ new Date(user.created_at).toLocaleDateString() }}</li>
         </ul>
@@ -42,7 +41,7 @@
           <h4>Repositórios:</h4>
           <b-form-input v-model="repos_filter" id="repos-filter" type="text" class="search" placeholder="Buscar"></b-form-input>
           <ul class="list">
-            <li v-for="(repo, index) in filter" :key="repo.id">
+            <li v-for="repo in filter" :key="repo.id">
               <b-link @click="moreRepos(repo.id)" class="cursor" :class="{ active: repo.id === cache.repos_id && cache.repos_more_view }">&raquo; {{ repo.name }}</b-link></li>
           </ul>
           <p>Exibindo {{ filter.length }} de {{ totalRepos }} Repositórios</p>
@@ -67,28 +66,16 @@
 </template>
 
 <script>
-/*import Count from './Count.vue'
-import User from './User.vue'
-import UserInfo from './UserInfo.vue'
-import UserRepos from './UserRepos.vue'
-import UserReposDescription from './UserReposDescription.vue'*/
 
 export default {
   name: 'UserList',
-  /*components: {
-    Count,
-    User,
-    UserInfo,
-    UserRepos,
-    UserReposDescription
-  },*/
   props: {
     user: Object,
     userID: String,
     userAgent: String
   },
   data: () => ({
-    current_view: "user_view",
+    current_view: 'user_view',
     isActive: false,
     repos_filter: '',
     cache: {
@@ -116,46 +103,46 @@ export default {
   methods: {
     getNumber (num, digits = 1) {
       let si = [
-        { value: 1E18 },
-        { value: 1E15 },
-        { value: 1E12 },
-        { value: 1E9 },
-        { value: 1E6 },
-        { value: 1E3 },
-        { value: 1E0 }
-      ], 
-      rx = /\.0+$|(\.[0-9]*[1-9])0+$/, i;
+          {value: 1E18},
+          {value: 1E15},
+          {value: 1E12},
+          {value: 1E9},
+          {value: 1E6},
+          {value: 1E3},
+          {value: 1E0}
+        ],
+        rx = /\.0+$|(\.[0-9]*[1-9])0+$/
       for (let i = 0; i < si.length; i++) {
         if (num >= si[i].value) {
-          return (num / si[i].value).toFixed(digits).replace(rx, '$1');
+          return (num / si[i].value).toFixed(digits).replace(rx, '$1')
         }
       }
-      return num.toFixed(digits).replace(rx, '$1');
+      return num.toFixed(digits).replace(rx, '$1')
     },
     getCount (type, url) {
       this.current_view = type
-        if ((!url) || (url === this.call.repos))
-          return
-      
+      if ((!url) || (url === this.call.repos)) {
+        return
+      }
       this.$http.get(url + '?clientID=' + this.userID + '&clientAgent=' + this.userAgent + '&page=' + this.cache.repos_page)
         .then((res) => {
           const result = res.body
-          if(type) {
+          if (type) {
             this.cache.repos = result
           } else {
-            console.log('ERROR' , type)
+            console.log('ERROR', type)
           }
           return result
         })
         .catch((error) => {
-          console.log("Catch", error)
+          console.log('Catch', error)
         })
-      },
+    },
     moreRepos (id) {
       if (this.cache.repos_id !== id) {
-         this.cache.repos_more_view = true
-         this.cache.repos_id = id
-         this.cache.repos_index = this.cache.repos.findIndex(repo => repo.id === id)
+        this.cache.repos_more_view = true
+        this.cache.repos_id = id
+        this.cache.repos_index = this.cache.repos.findIndex(repo => repo.id === id)
       } else {
         this.cache.repos_more_view = !this.cache.repos_more_view
       }
@@ -171,7 +158,7 @@ export default {
 <style scoped>
   a {
     color: #007bff !important;
-    cursor: pointer; 
+    cursor: pointer;
   }
   a:hover {
     text-decoration: none;
@@ -227,10 +214,10 @@ export default {
   }
   .userReposDescription .title {
     text-transform: uppercase;
-    white-space: nowrap; 
-    width: 100%; 
+    white-space: nowrap;
+    width: 100%;
     overflow: hidden;
     text-decoration: underline;
-    text-overflow: ellipsis; 
+    text-overflow: ellipsis;
   }
 </style>
